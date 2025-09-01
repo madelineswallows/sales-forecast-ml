@@ -68,9 +68,10 @@ PY
 
 ## Results
 
-- **Evaluation**: Rolling backtests with a 14-day horizon and 28 lags produced an average error of **MAE ≈ 11.3**, meaning forecasts are off by about 11 sales units per day.  
-- **Interpretation**: Given daily sales around ~100–150, this corresponds to roughly a **7–10% average error** (MAPE/sMAPE).  
-- **Forecast**: The model generated a 28-day forecast beyond 2024-12-31, shown below. The forecast continues the observed upward trend while accounting for daily variability.  
+- **Evaluation**: Rolling backtests with a 14-day horizon and 28 lags produced an average **MAE ≈ 11.3**, which is about an **8–10% error rate** relative to typical daily sales levels.  
+- **Baseline comparison**: Both naïve baselines (last-day and 7-day average forecasts) performed worse, confirming that the ML models added real predictive value.  
+- **Feature engineering impact**: Adding lagged values (7- and 28-day) and rolling averages allowed XGBoost to capture short-term momentum, improving forecast stability and alignment with the upward sales trend.  
+- **Forecast**: The model generated a 28-day recursive forecast beyond 2024-12-31. The results continue the historical upward trend and account for recent variability.  
 
 ![28-day Forecast](reports/forecast_plot.png)
 
