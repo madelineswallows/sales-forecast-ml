@@ -9,10 +9,10 @@ sales-forecast-ml/
 │  └─ raw.csv                # daily/weekly/monthly sales (date, sales)
 ├─ src/
 │  ├─ backtest.py            # rolling-origin CV (horizon/lags)
-│  ├─ forecast.py            # fit/predict CLI for XGB or SARIMAX
-│  
+│  └─ forecast.py            # fit/predict CLI for XGB
+├─ README.md  
 ├─ reports/
-│  └─ forecast_plot.png      # generated plot (optional)
+│  └─ forecast_plot.png      # generated plot
 ├─ models/                   # saved models (.joblib)
 ├─ requirements.txt
 └─ .gitignore
@@ -21,7 +21,7 @@ sales-forecast-ml/
 ## Quickstart
 ### 1) Environment
 ```bash
-# Using conda (recommended on macOS)
+# Using conda
 conda create -n sales-forecast python=3.11 -y
 conda activate sales-forecast
 pip install -r requirements.txt
@@ -44,15 +44,11 @@ python src/backtest.py --data data/raw.csv --freq D --horizon 14 --lags 28 --mod
 ### 4) Train & Save
 ```bash
 python src/forecast.py fit --data data/raw.csv --model xgb --out models/xgb.joblib
-# Or SARIMAX:
-python src/forecast.py fit --data data/raw.csv --model sarimax --out models/sarimax.joblib
 ```
 
 ### 5) Forecast next 28 days
 ```bash
 python src/forecast.py predict --model models/xgb.joblib --steps 28 --last_date 2024-12-31 --out forecasts.csv
-# If using SARIMAX instead:
-python src/forecast.py predict --model models/sarimax.joblib --steps 28 --last_date 2024-12-31 --out forecasts.csv
 ```
 
 ### 6) Plot (optional)
