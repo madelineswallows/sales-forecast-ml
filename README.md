@@ -65,6 +65,7 @@ plt.savefig('reports/forecast_plot.png', dpi=200)
 print('Saved reports/forecast_plot.png')
 PY
 ```
+![28-day Forecast](reports/forecast_plot.png)
 
 ## Notes
 - **Horizon/Lags**: choose based on business cadence (e.g., horizon=14 days, lags=28 for daily).
