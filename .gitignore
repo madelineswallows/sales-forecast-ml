@@ -18,3 +18,4 @@ models/**
 reports/figures/**
 reports/*.png
 forecasts.csv
+.DS_Store
