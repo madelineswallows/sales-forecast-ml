@@ -10,7 +10,7 @@ sales-forecast-ml/
 ├─ src/
 │  ├─ backtest.py            # rolling-origin CV (horizon/lags)
 │  ├─ forecast.py            # fit/predict CLI for XGB or SARIMAX
-│  ├─ data.py, features.py, metrics.py, models.py (if present)
+│  
 ├─ reports/
 │  └─ forecast_plot.png      # generated plot (optional)
 ├─ models/                   # saved models (.joblib)
