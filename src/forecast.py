@@ -2,6 +2,7 @@ import argparse, pandas as pd, numpy as np
 from joblib import dump, load
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from xgboost import XGBRegressor
+import joblib, numpy as np, pandas as pd
 
 def fit(data, model, out):
     df = pd.read_csv(data, parse_dates=['date'])
@@ -12,25 +13,44 @@ def fit(data, model, out):
         res = sar.fit(disp=False)
         dump(res, out)
     else:
-        X = np.arange(len(y)).reshape(-1,1)
-        xgb = XGBRegressor(n_estimators=100)
+    # Use time index as feature
+        X = np.arange(len(y)).reshape(-1, 1)
+        xgb = XGBRegressor(
+            n_estimators=400,
+            max_depth=4,
+            learning_rate=0.06,
+            subsample=0.9,
+            colsample_bytree=0.9,
+            reg_lambda=1.0,
+            random_state=42
+        )
         xgb.fit(X, y)
         dump(xgb, out)
+
     print(f"Saved model to {out}")
 
 def predict(model_path, steps, last_date, out):
     model = load(model_path)
+
+    # Generate future dates
+    df_dates = pd.date_range(
+        pd.to_datetime(last_date) + pd.Timedelta(days=1),
+        periods=steps,
+        freq='D'
+    )
+
     if isinstance(model, XGBRegressor):
-        hist_len = model._Booster.num_boosted_rounds()
-        start = 0
-    df_dates = pd.date_range(pd.to_datetime(last_date)+pd.Timedelta(days=1), periods=steps, freq='D')
-    if isinstance(model, XGBRegressor):
-        X_future = np.arange(len(df_dates)).reshape(-1,1)
-        preds = model.predict(np.arange(len(df_dates)).reshape(-1,1))
+        # FIX: continue time index from end of training
+        hist = pd.read_csv('data/raw.csv', parse_dates=['date']).sort_values('date')
+        n_train = len(hist)
+        X_future = np.arange(n_train, n_train + steps).reshape(-1, 1)
+        preds = model.predict(X_future)
     else:
         preds = model.forecast(steps=steps)
-    pd.DataFrame({'date':df_dates,'forecast':preds}).to_csv(out,index=False)
+
+    pd.DataFrame({'date': df_dates, 'forecast': preds}).to_csv(out, index=False)
     print(f"Wrote forecasts to {out}")
+
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
